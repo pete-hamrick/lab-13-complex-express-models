@@ -26,9 +26,7 @@ async function saveSomeAnimals() {
   ];
   return Promise.all(
     animalsData.map(async (animal) => {
-      const res = await (
-        await request(app).post('/api/animals')
-      ).setEncoding(animal);
+      const res = await request(app).post('/api/animals').send(animal);
       return res.body;
     })
   );
@@ -88,7 +86,7 @@ describe('Species and Animals routes', () => {
       });
   });
 
-  xit('should get an animal by id', async () => {
+  it('should get an animal by id', async () => {
     await saveSomeSpecies();
     await saveSomeAnimals();
 
