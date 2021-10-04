@@ -27,6 +27,11 @@ describe('Species and Animals routes', () => {
   beforeEach(() => {
     return request(app).post('/api/species').send({ type: 'Reptile' });
   });
+  beforeEach(() => {
+    return request(app)
+      .post('/api/animals')
+      .send({ name: 'cougar', speciesId: '1' });
+  });
 
   it('should let you add a new Species', () => {
     return request(app)
@@ -68,7 +73,19 @@ describe('Species and Animals routes', () => {
   it('should let you add a new animal', () => {
     return request(app)
       .post('/api/animals')
-      .send({ name: 'cougar', speciesId: '1' })
+      .send({ name: 'bear', speciesId: '1' })
+      .then((res) => {
+        expect(res.body).toEqual({
+          id: '2',
+          name: 'bear',
+          speciesId: '1',
+        });
+      });
+  });
+
+  it('should get an animal by id', () => {
+    return request(app)
+      .get('/api/animals/1')
       .then((res) => {
         expect(res.body).toEqual({
           id: '1',
