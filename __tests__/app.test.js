@@ -3,34 +3,40 @@ import setup from '../data/setup.js';
 import request from 'supertest';
 import app from '../lib/app.js';
 
-// async function saveSomeSpecies() {
-//   const mammal = { type: 'Mammal' };
-//   const amphibian = { type: 'Amphibian' };
-//   const reptile = { type: 'Reptile' };
+async function saveSomeSpecies() {
+  const speciesData = [
+    { type: 'Mammal' },
+    { type: 'Amphibian' },
+    { type: 'Reptile' },
+  ];
 
-//   Promise.all([mammal, amphibian, reptile]);
-//   request(app).post('/api/species').send({ type: 'Mammal' });
-//   request(app).post('/api/species').send({ type: 'Amphibian' });
-//   request(app).post('/api/species').send({ type: 'Reptile' });
-// }
+  return Promise.all(
+    speciesData.map(async (species) => {
+      const res = await request(app).post('/api/species').send(species);
+      return res.body;
+    })
+  );
+}
+
+async function saveSomeAnimals() {
+  const animalsData = [
+    { name: 'bear', speciesId: '1' },
+    { name: 'frog', speciesId: '2' },
+    { name: 'fox', speciesId: '1' },
+  ];
+  return Promise.all(
+    animalsData.map(async (animal) => {
+      const res = await (
+        await request(app).post('/api/animals')
+      ).setEncoding(animal);
+      return res.body;
+    })
+  );
+}
 
 describe('Species and Animals routes', () => {
   beforeEach(() => {
     return setup(pool);
-  });
-  beforeEach(() => {
-    return request(app).post('/api/species').send({ type: 'Mammal' });
-  });
-  beforeEach(() => {
-    return request(app).post('/api/species').send({ type: 'Amphibian' });
-  });
-  beforeEach(() => {
-    return request(app).post('/api/species').send({ type: 'Reptile' });
-  });
-  beforeEach(() => {
-    return request(app)
-      .post('/api/animals')
-      .send({ name: 'cougar', speciesId: '1' });
   });
 
   it('should let you add a new Species', () => {
@@ -39,58 +45,60 @@ describe('Species and Animals routes', () => {
       .send({ type: 'Bird' })
       .then((res) => {
         expect(res.body).toEqual({
-          id: '4',
+          id: '1',
           type: 'Bird',
         });
       });
   });
 
   it('should get all species', async () => {
-    // await saveSomeSpecies();
-    // request(app).post('/api/species').send({ type: 'Mammal' });
-    // request(app).post('/api/species').send({ type: 'Amphibian' });
-    // request(app).post('/api/species').send({ type: 'Reptile' });
+    await saveSomeSpecies();
+
     return request(app)
       .get('/api/species')
       .then((res) => {
         expect(res.body).toEqual([
           {
             id: '1',
-            type: 'Mammal',
+            type: expect.any(String),
           },
           {
             id: '2',
-            type: 'Amphibian',
+            type: expect.any(String),
           },
           {
             id: '3',
-            type: 'Reptile',
+            type: expect.any(String),
           },
         ]);
       });
   });
 
-  it('should let you add a new animal', () => {
+  it('should add a new animal', async () => {
+    await saveSomeSpecies();
     return request(app)
       .post('/api/animals')
-      .send({ name: 'bear', speciesId: '1' })
+      .send({ name: 'tiger', speciesId: '1' })
       .then((res) => {
         expect(res.body).toEqual({
-          id: '2',
-          name: 'bear',
+          id: expect.any(String),
+          name: 'tiger',
           speciesId: '1',
         });
       });
   });
 
-  it('should get an animal by id', () => {
+  xit('should get an animal by id', async () => {
+    await saveSomeSpecies();
+    await saveSomeAnimals();
+
     return request(app)
       .get('/api/animals/1')
       .then((res) => {
         expect(res.body).toEqual({
           id: '1',
-          name: 'cougar',
-          speciesId: '1',
+          name: expect.any(String),
+          speciesId: expect.any(String),
         });
       });
   });
