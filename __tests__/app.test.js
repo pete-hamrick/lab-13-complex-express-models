@@ -14,7 +14,7 @@ import app from '../lib/app.js';
 //   request(app).post('/api/species').send({ type: 'Reptile' });
 // }
 
-describe('Species routes', () => {
+describe('Species and Animals routes', () => {
   beforeEach(() => {
     return setup(pool);
   });
@@ -62,6 +62,19 @@ describe('Species routes', () => {
             type: 'Reptile',
           },
         ]);
+      });
+  });
+
+  it('should let you add a new animal', () => {
+    return request(app)
+      .post('/api/animals')
+      .send({ name: 'cougar', speciesId: '1' })
+      .then((res) => {
+        expect(res.body).toEqual({
+          id: '1',
+          name: 'cougar',
+          speciesId: '1',
+        });
       });
   });
 
