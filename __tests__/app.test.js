@@ -101,6 +101,30 @@ describe('Species and Animals routes', () => {
       });
   });
 
+  it('should get all animals and include their species', async () => {
+    await saveSomeSpecies();
+    await saveSomeAnimals();
+
+    return request(app)
+      .get('/api/animals/species')
+      .then((res) => {
+        expect(res.body).toEqual([
+          {
+            name: expect.any(String),
+            species: expect.any(String),
+          },
+          {
+            name: expect.any(String),
+            species: expect.any(String),
+          },
+          {
+            name: expect.any(String),
+            species: expect.any(String),
+          },
+        ]);
+      });
+  });
+
   afterAll(() => {
     pool.end();
   });
