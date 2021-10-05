@@ -159,6 +159,26 @@ describe('Species and Animals routes', () => {
       });
   });
 
+  it('should return a count of animals by species', async () => {
+    await saveSomeSpecies();
+    await saveSomeAnimals();
+
+    return request(app)
+      .get('/api/animals/species/count')
+      .then((res) => {
+        expect(res.body).toEqual([
+          {
+            count: expect.any(String),
+            type: expect.any(String),
+          },
+          {
+            count: expect.any(String),
+            type: expect.any(String),
+          },
+        ]);
+      });
+  });
+
   afterAll(() => {
     pool.end();
   });
