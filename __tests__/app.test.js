@@ -125,6 +125,25 @@ describe('Species and Animals routes', () => {
       });
   });
 
+  it('updates an animal', async () => {
+    await saveSomeSpecies();
+    await saveSomeAnimals();
+
+    return request(app)
+      .update('/api/animals/1')
+      .send({
+        name: 'Tiger',
+        speciesId: '1',
+      })
+      .then((res) => {
+        expect(res.body).toEqual({
+          id: '1',
+          name: 'Tiger',
+          speciesId: '1',
+        });
+      });
+  });
+
   afterAll(() => {
     pool.end();
   });
