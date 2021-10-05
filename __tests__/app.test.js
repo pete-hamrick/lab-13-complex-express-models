@@ -144,6 +144,21 @@ describe('Species and Animals routes', () => {
       });
   });
 
+  it('deletes an animal by id', async () => {
+    await saveSomeSpecies();
+    await saveSomeAnimals();
+
+    return request(app)
+      .delete('/api/animals/1')
+      .then((res) => {
+        expect(res.body).toEqual({
+          id: '1',
+          name: expect.any(String),
+          speciesId: expect.any(String),
+        });
+      });
+  });
+
   afterAll(() => {
     pool.end();
   });
