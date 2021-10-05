@@ -130,7 +130,7 @@ describe('Species and Animals routes', () => {
     await saveSomeAnimals();
 
     return request(app)
-      .update('/api/animals/1')
+      .put('/api/animals/1')
       .send({
         name: 'Tiger',
         speciesId: '1',
